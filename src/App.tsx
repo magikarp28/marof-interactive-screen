@@ -10,11 +10,11 @@ import InteractiveMap from "./sections/InteractiveMap";
 import Timeline from "./sections/Timeline";
 import VisitorRoutes from "./sections/VisitorRoutes";
 
-import audioStoriesIcon from "./assets/images/audio priče.png";
-import interactiveMapIcon from "./assets/images/Interaktivna Karta.png";
-import visitorRoutesIcon from "./assets/images/posjetiteljske rute.png";
-import beforeAfterIcon from "./assets/images/prijeposlije.png";
-import timelineIcon from "./assets/images/Vremenska crta.png";
+import audioStoriesIcon from "./assets/images/audio priče.webp";
+import interactiveMapIcon from "./assets/images/Interaktivna Karta.webp";
+import visitorRoutesIcon from "./assets/images/posjetiteljske rute.webp";
+import beforeAfterIcon from "./assets/images/prijeposlije.webp";
+import timelineIcon from "./assets/images/Vremenska crta.webp";
 
 type NavigationItem = {
   id: SectionId;
@@ -99,7 +99,7 @@ function App() {
     : null;
 
   return (
-    <main className="relative h-[100dvh] min-h-165 overflow-hidden bg-[#426795] text-[#F4EFE5] [background-image:linear-gradient(115deg,rgba(255,255,255,0.055)_25%,transparent_25%,transparent_50%,rgba(255,255,255,0.055)_50%,rgba(255,255,255,0.055)_75%,transparent_75%)] [background-size:18px_18px]">
+    <main className="relative h-[100dvh] overflow-hidden bg-[#426795] text-[#F4EFE5] [background-image:linear-gradient(115deg,rgba(255,255,255,0.055)_25%,transparent_25%,transparent_50%,rgba(255,255,255,0.055)_50%,rgba(255,255,255,0.055)_75%,transparent_75%)] [background-size:18px_18px]">
       <AnimatePresence mode="wait" initial={false}>
         {activeSection ? (
           <motion.div
@@ -115,7 +115,7 @@ function App() {
         ) : (
           <motion.section
             key="home"
-            className="mx-auto flex h-full max-w-480 flex-col px-10 py-9 lg:px-16 lg:py-12"
+            className="mx-auto flex h-full max-w-480 flex-col overflow-y-auto px-4 py-5 sm:px-10 sm:py-9 lg:px-16 lg:py-12"
             initial={{ x: "-12%", opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: "-12%", opacity: 0 }}
@@ -126,7 +126,7 @@ function App() {
                 <p className="mb-2 text-lg font-semibold tracking-[0.24em] text-[#D8BF9E] uppercase">
                   {t("app.location")}
                 </p>
-                <h1 className="font-sans text-5xl font-semibold tracking-normal text-[#F4EFE5] lg:text-6xl">
+                <h1 className="font-sans text-3xl font-semibold tracking-normal text-[#F4EFE5] sm:text-5xl lg:text-6xl">
                   {t("app.heading")}
                 </h1>
                 <p className="mt-4 max-w-3xlxl text-base leading-relaxed text-[#F4EFE5]/90 lg:text-lg">
@@ -138,7 +138,7 @@ function App() {
 
             <nav
               aria-label={t("app.navigation")}
-              className="grid min-h-0 flex-1 grid-cols-2 gap-5 py-7 lg:gap-6 landscape:lg:grid-cols-5"
+              className="grid min-h-[42rem] flex-1 grid-cols-2 gap-5 py-7 sm:min-h-0 lg:gap-6 landscape:lg:grid-cols-5"
             >
               {navigationItems.map((item, index) => (
                 <motion.button

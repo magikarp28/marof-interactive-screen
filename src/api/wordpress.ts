@@ -27,10 +27,11 @@ export type LocationMeta = {
   short_description_en: string;
   description_hr: string;
   description_en: string;
+  map_label_hr: string;
+  map_label_en: string;
   map_x: number | string | null;
   map_y: number | string | null;
   gallery_image_ids: number[];
-  audio_story_ids: number[];
   video_ids: number[];
 };
 
