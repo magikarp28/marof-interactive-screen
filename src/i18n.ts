@@ -102,6 +102,9 @@ i18n
             duration: "Trajanje",
             ageGroup: "Dobna skupina",
             canceled: "Otkazano",
+            qrCodeTitle: "Nastavite na mobitelu",
+            qrCodeHint:
+              "Skenirajte QR kod kamerom mobitela kako biste ovu rutu otvorili na svom telefonu.",
             qrCodeAlt: "QR kod za rutu {{title}}",
             eventTypes: {
               strucna_tura: "Stručna tura",
@@ -203,6 +206,9 @@ i18n
             duration: "Duration",
             ageGroup: "Age group",
             canceled: "Canceled",
+            qrCodeTitle: "Continue on your phone",
+            qrCodeHint:
+              "Scan the QR code with your phone's camera to open this same route on your phone.",
             qrCodeAlt: "QR code for the {{title}} route",
             eventTypes: {
               strucna_tura: "Expert tour",

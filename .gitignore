@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# tsc build artifacts that would shadow vite.config.ts
+vite.config.js
+vite.config.d.ts

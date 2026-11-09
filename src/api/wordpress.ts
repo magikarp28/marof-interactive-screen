@@ -168,7 +168,7 @@ export function normalizeSingleNumber(value: unknown): number | null {
 }
 
 const apiBaseUrl = (
-  import.meta.env.VITE_WORDPRESS_API_BASE_URL ?? "/wp-json/wp/v2"
+  import.meta.env.VITE_WORDPRESS_API_BASE_URL ?? "/admin/wp-json/wp/v2"
 ).replace(/\/$/, "");
 
 export async function fetchCmsCollection<T>(

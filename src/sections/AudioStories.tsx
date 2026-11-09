@@ -37,12 +37,31 @@ function AudioStories({ onBack }: AudioStoriesProps) {
       return;
     }
 
-    if (isPlaying) {
-      void audio.play().catch(() => setIsPlaying(false));
+    audio.load();
+  }, [activeAudioUrl]);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio || !activeAudioUrl) {
       return;
     }
 
-    audio.pause();
+    if (!isPlaying) {
+      audio.pause();
+      return;
+    }
+
+    const playAudio = () => {
+      void audio.play().catch(() => setIsPlaying(false));
+    };
+
+    if (audio.readyState >= HTMLMediaElement.HAVE_METADATA) {
+      playAudio();
+      return;
+    }
+
+    audio.addEventListener("canplay", playAudio, { once: true });
+    return () => audio.removeEventListener("canplay", playAudio);
   }, [activeAudioUrl, isPlaying]);
 
   function getAudioUrl(story: AudioStory) {
@@ -76,16 +95,28 @@ function AudioStories({ onBack }: AudioStoriesProps) {
     setCurrentTime(time);
   }
 
+  function updateDuration(audio: HTMLAudioElement) {
+    if (Number.isFinite(audio.duration) && audio.duration > 0) {
+      setDuration(audio.duration);
+    }
+  }
+
   return (
     <SectionLayout title={t("sections.audio")} onBack={onBack}>
       <audio
+        key={activeStoryId ?? "no-active-story"}
         ref={audioRef}
         src={activeAudioUrl ?? undefined}
-        onLoadedMetadata={(event) => setDuration(event.currentTarget.duration)}
+        preload="metadata"
+        onLoadedMetadata={(event) => updateDuration(event.currentTarget)}
+        onDurationChange={(event) => updateDuration(event.currentTarget)}
         onTimeUpdate={(event) =>
           setCurrentTime(event.currentTarget.currentTime)
         }
-        onEnded={() => setIsPlaying(false)}
+        onEnded={(event) => {
+          setCurrentTime(event.currentTarget.duration);
+          setIsPlaying(false);
+        }}
       />
 
       <div className="w-full max-w-260 self-stretch overflow-y-auto py-1 pr-2">

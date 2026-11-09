@@ -323,7 +323,12 @@ function VisitorRoutes({ onBack, routeId, onRouteSelect }: VisitorRoutesProps) {
 
                 {qrCode ? (
                   <section className="mt-7 border-t-2 border-[#D96543]/55 pt-5">
-                    <p></p>
+                    <h3 className="text-xl font-extrabold text-[#426795]">
+                      {t("visitorRoutes.qrCodeTitle")}
+                    </h3>
+                    <p className="mb-4 mt-1 text-lg leading-relaxed text-black/70">
+                      {t("visitorRoutes.qrCodeHint")}
+                    </p>
                     <img
                       className="w-44 border-2 border-[#426795] bg-[#ffffff]"
                       src={qrCode.source_url}
