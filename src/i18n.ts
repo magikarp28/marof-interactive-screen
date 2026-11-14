@@ -60,11 +60,15 @@ i18n
           },
           timeline: {
             years: "Godine",
+            scrollHint: "Pomaknite vodoravno za pregled godina.",
             loading: "Učitavanje vremenske crte...",
             error: "Vremenska crta trenutačno nije dostupna.",
             empty: "Još nema objavljenih događaja na vremenskoj crti.",
             images: "Galerija slika",
             loadingMedia: "Učitavanje medija...",
+            enlargeImage: "Povećaj sliku",
+            enlargedImage: "Povećana slika",
+            closeImage: "Zatvori",
           },
           interactiveMap: {
             loading: "Učitavanje lokacija...",
@@ -164,11 +168,15 @@ i18n
           },
           timeline: {
             years: "Years",
+            scrollHint: "Scroll sideways to explore the years.",
             loading: "Loading timeline...",
             error: "The timeline is currently unavailable.",
             empty: "There are no published timeline events yet.",
             images: "Image gallery",
             loadingMedia: "Loading media...",
+            enlargeImage: "Enlarge image",
+            enlargedImage: "Enlarged image",
+            closeImage: "Close",
           },
           interactiveMap: {
             loading: "Loading locations...",

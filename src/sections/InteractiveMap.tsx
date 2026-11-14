@@ -15,18 +15,18 @@ import {
 import { useLocations, useWordPressMedia } from "../hooks/useCmsData";
 import mapImage from "../assets/images/Map image.jpg";
 import SectionLayout from "./SectionLayout";
-import { FaParking } from "react-icons/fa";
+//import { FaParking } from "react-icons/fa";
 
 type InteractiveMapProps = {
   onBack: () => void;
 };
 
 // Temporary positions as percentages of the original map image.
-const parkingPositions = [
+/*const parkingPositions = [
   { x: 23, y: 62 },
   { x: 6, y: 20 },
   { x: 10, y: 91 },
-];
+];*/
 const youAreHerePosition = { x: 45.5, y: 79 };
 const maxZoom = 3;
 const mapAspectRatio = 2000 / 1213;
@@ -47,8 +47,9 @@ function localizedLocationTitle(location: Location, language: "hr" | "en") {
 function localizedMapLabel(location: Location, language: "hr" | "en") {
   return (
     location.meta[`map_label_${language}`]?.trim() ||
+    (language === "en" && location.meta.title_en?.trim()) ||
     location.meta.map_label_hr?.trim() ||
-    localizedLocationTitle(location, language)
+    location.title.rendered
   );
 }
 
@@ -338,7 +339,7 @@ function InteractiveMap({ onBack }: InteractiveMapProps) {
                 alt={t("interactiveMap.mapAlt")}
                 draggable={false}
               />
-              {parkingPositions.map((position, index) => (
+              {/*parkingPositions.map((position, index) => (
                 <span
                   key={index}
                   className="absolute -translate-x-1/2 -translate-y-1/2 rounded bg-white p-1 text-[#1463b3] shadow"
@@ -351,7 +352,7 @@ function InteractiveMap({ onBack }: InteractiveMapProps) {
                     aria-hidden="true"
                   />
                 </span>
-              ))}
+              ))*/}
               <div
                 className="absolute z-10 flex flex-col -translate-x-1/2 -translate-y-1/2 items-center gap-2 whitespace-nowrap rounded-full  px-3 py-2 text-xs font-black text-[#922b1e] sm:text-xs"
                 style={{
@@ -467,7 +468,7 @@ function InteractiveMap({ onBack }: InteractiveMapProps) {
 
                 {localizedText(selectedLocation, "description", language) ? (
                   <div
-                    className="mt-5 border-t-2 border-[#D96543]/55 pt-5 leading-relaxed [&_a]:font-bold [&_a]:text-[#426795] [&_p]:mb-3"
+                    className="mt-5 border-t-2 border-[#D96543]/55 pt-5 leading-relaxed whitespace-pre-line [&_a]:font-bold [&_a]:text-[#426795] [&_p]:mb-3"
                     dangerouslySetInnerHTML={{
                       __html: localizedText(
                         selectedLocation,

@@ -6,9 +6,9 @@ This template should help get you started developing with Tauri, React and Types
 
 Each WordPress Lokacije entry has Croatian and English map-label fields. The
 label is displayed on the clickable marker at the configured X/Y position.
-If the English label is empty, the Croatian label is used; if no label is
-available, the localized location title is used instead. Existing locations can
-therefore remain visible until their labels are entered.
+If the English label is empty, the English location title is used. If neither
+is available, the Croatian label or location title is used instead. Croatian
+markers use the Croatian label, falling back to the location title.
 
 The three parking markers and the "you are here" marker currently use temporary
 positions. Update `parkingPositions` and `youAreHerePosition` in

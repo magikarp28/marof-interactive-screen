@@ -18,6 +18,40 @@ button {
   width: max(var(--map-zoom), var(--map-min-width));
 }
 
+.timeline-scroll {
+  scrollbar-color: #426795 #f4efe5;
+  scrollbar-width: thin;
+}
+
+.timeline-image-button {
+  display: none;
+}
+
+@media (min-width: 768px) and (min-height: 501px) {
+  .timeline-image-static {
+    display: none;
+  }
+
+  .timeline-image-button {
+    display: block;
+  }
+}
+
+.timeline-stop {
+  min-width: 7rem;
+}
+
+.timeline-stop:not(:last-child)::before {
+  position: absolute;
+  top: 4.5rem;
+  right: -50%;
+  left: 50%;
+  height: 3px;
+  background: #426795;
+  content: "";
+  transform: translateY(-50%);
+}
+
 /* Scale rem-based UI on large displays so 4K matches the 1080p proportions. */
 @media (min-width: 2560px) {
   html {
@@ -69,6 +103,112 @@ button {
 }
 
 @media (max-width: 767px), (max-height: 500px) {
+  .timeline-section > header {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+  }
+
+  .timeline-section > header h1 {
+    font-size: 1.5rem;
+  }
+
+  .timeline-section > header > div {
+    gap: 0.75rem;
+  }
+
+  .timeline-section > header > div > button {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+  }
+
+  .timeline-section > div {
+    align-items: flex-start;
+    padding: 1rem;
+    background: #fff;
+  }
+
+  .timeline-layout {
+    gap: 1rem;
+  }
+
+  .timeline-navigation,
+  .timeline-detail {
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .timeline-heading {
+    padding: 0 0 0.75rem;
+  }
+
+  .timeline-detail {
+    min-height: 0;
+    padding: 0;
+  }
+
+  .visitor-routes-section > header {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+  }
+
+  .visitor-routes-section > header h1 {
+    font-size: 1.5rem;
+  }
+
+  .visitor-routes-section > header > div {
+    gap: 0.75rem;
+  }
+
+  .visitor-routes-section > header > div > button {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+  }
+
+  .visitor-routes-section > div {
+    align-items: flex-start;
+    padding: 0.75rem;
+    background: #fff;
+  }
+
+  .visitor-routes-list,
+  .visitor-routes-detail {
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .visitor-routes-list-heading {
+    padding: 0 0 0.75rem;
+  }
+
+  .visitor-routes-list-item {
+    gap: 1rem;
+    padding: 0.75rem 0;
+  }
+
+  .visitor-routes-pagination {
+    flex-wrap: wrap;
+    padding: 1rem 0;
+  }
+
+  .visitor-routes-pagination > span {
+    order: -1;
+    width: 100%;
+    text-align: center;
+  }
+
+  .visitor-routes-detail {
+    min-height: 0;
+    padding: 0;
+  }
+
   .map-section-header {
     flex-direction: row;
     align-items: center;

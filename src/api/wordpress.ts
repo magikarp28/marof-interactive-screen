@@ -82,9 +82,10 @@ export type BeforeAfter = WordPressPost<BeforeAfterMeta>;
 
 export type TimelineMeta = {
   year: string;
-  text: string;
+  text_hr: string;
+  text_en: string;
+  text?: string;
   gallery_image_ids: number[];
-  location_ids: number[];
 };
 
 export type TimelineItem = WordPressPost<TimelineMeta>;

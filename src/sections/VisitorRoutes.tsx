@@ -109,10 +109,10 @@ function VisitorRoutes({ onBack, routeId, onRouteSelect }: VisitorRoutesProps) {
       : "";
 
   return (
-    <SectionLayout title={t("sections.routes")} onBack={onBack}>
+    <SectionLayout title={t("sections.routes")} onBack={onBack} className="visitor-routes-section">
       {routeId === null ? (
-        <div className="w-full max-w-400 self-stretch border-2 border-[#426795] bg-[#ffffff] shadow-[8px_8px_0_rgba(66,103,149,0.18)]">
-          <div className="border-b-2 border-[#D96543]/55 px-5 py-4 lg:px-6">
+        <div className="visitor-routes-list min-h-max w-full max-w-400 self-stretch border-2 border-[#426795] bg-[#ffffff] shadow-[8px_8px_0_rgba(66,103,149,0.18)]">
+          <div className="visitor-routes-list-heading border-b-2 border-[#D96543]/55 px-5 py-4 lg:px-6">
             <h2 className="text-2xl font-bold">
               {t("visitorRoutes.listTitle")}
             </h2>
@@ -153,7 +153,7 @@ function VisitorRoutes({ onBack, routeId, onRouteSelect }: VisitorRoutesProps) {
                   <button
                     type="button"
                     onClick={() => onRouteSelect(route.id)}
-                    className="flex w-full items-center gap-5 px-5 py-4 text-left transition-colors hover:bg-[#D8BF9E] focus-visible:outline-4 focus-visible:outline-offset-[-4px] focus-visible:outline-[#D96543] lg:px-6"
+                    className="visitor-routes-list-item flex w-full items-center gap-5 px-5 py-4 text-left transition-colors hover:bg-[#D8BF9E] focus-visible:outline-4 focus-visible:outline-offset-[-4px] focus-visible:outline-[#D96543] lg:px-6"
                   >
                     {thumbnail ? (
                       <img
@@ -191,7 +191,7 @@ function VisitorRoutes({ onBack, routeId, onRouteSelect }: VisitorRoutesProps) {
 
           {totalPages > 1 ? (
             <nav
-              className="flex items-center justify-between gap-4 border-t-2 border-[#D96543]/55 px-5 py-4 lg:px-6"
+              className="visitor-routes-pagination flex items-center justify-between gap-4 border-t-2 border-[#D96543]/55 px-5 py-4 lg:px-6"
               aria-label={t("visitorRoutes.pagination")}
             >
               <button
@@ -233,7 +233,7 @@ function VisitorRoutes({ onBack, routeId, onRouteSelect }: VisitorRoutesProps) {
 
           <section
             ref={detailRef}
-            className="min-h-90 scroll-mt-6 border-2 border-[#426795] bg-[#ffffff] p-5 shadow-[8px_8px_0_rgba(66,103,149,0.18)] lg:p-7"
+            className="visitor-routes-detail min-h-90 scroll-mt-6 border-2 border-[#426795] bg-[#ffffff] p-5 shadow-[8px_8px_0_rgba(66,103,149,0.18)] lg:p-7"
             aria-live="polite"
           >
             {selectedRoute ? (

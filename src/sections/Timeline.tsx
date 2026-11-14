@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
 import {
   normalizeNumberArray,
@@ -31,8 +32,15 @@ function orderedMedia(ids: number[], media: WordPressMedia[]) {
   });
 }
 
+function localizedTimelineText(item: TimelineItem, language: "hr" | "en") {
+  return (
+    item.meta[`text_${language}`] || item.meta.text_hr || item.meta.text || ""
+  );
+}
+
 function Timeline({ onBack }: TimelineProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const language = i18n.resolvedLanguage === "en" ? "en" : "hr";
   const { data: timelineItems, isLoading, error } = useTimeline();
   const items = timelineItems
     .flatMap((item) => {
@@ -41,6 +49,8 @@ function Timeline({ onBack }: TimelineProps) {
     })
     .sort((first, second) => first.year - second.year);
   const [selectedItemId, setSelectedItemId] = useState<number | null>(null);
+  const [enlargedImage, setEnlargedImage] = useState<WordPressMedia | null>(null);
+  const imageDialogRef = useRef<HTMLDialogElement>(null);
   const selectedEntry =
     items.find(({ item }) => item.id === selectedItemId) ?? items[0];
   const mediaIds = items.flatMap(({ item }) =>
@@ -49,15 +59,33 @@ function Timeline({ onBack }: TimelineProps) {
   const { data: media, isLoading: isMediaLoading } =
     useWordPressMedia(mediaIds);
   const images = selectedEntry
-    ? orderedMedia(normalizeNumberArray(selectedEntry.item.meta.gallery_image_ids), media)
+    ? orderedMedia(
+        normalizeNumberArray(selectedEntry.item.meta.gallery_image_ids),
+        media,
+      )
     : [];
+  const selectedText = selectedEntry
+    ? localizedTimelineText(selectedEntry.item, language)
+    : "";
 
   return (
-    <SectionLayout title={t("sections.timeline")} onBack={onBack}>
-      <div className="grid w-full max-w-400 self-stretch gap-6 portrait:content-start landscape:lg:grid-cols-[minmax(15rem,0.55fr)_minmax(0,1.45fr)] landscape:lg:items-start">
-        <aside className="border-2 border-[#426795] bg-[#ffffff] shadow-[8px_8px_0_rgba(66,103,149,0.18)]">
-          <div className="border-b-2 border-[#D96543]/55 px-5 py-4 lg:px-6">
+    <SectionLayout
+      title={t("sections.timeline")}
+      onBack={onBack}
+      className="timeline-section"
+    >
+      <div className="timeline-layout grid w-full min-w-0 max-w-400 self-start content-start gap-6">
+        <nav
+          className="timeline-navigation min-w-0 border-2 border-[#426795] bg-[#ffffff] shadow-[8px_8px_0_rgba(66,103,149,0.18)]"
+          aria-label={t("timeline.years")}
+        >
+          <div className="timeline-heading flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-b-2 border-[#D96543]/55 px-5 py-4 lg:px-6">
             <h2 className="text-2xl font-bold">{t("timeline.years")}</h2>
+            {items.length > 1 ? (
+              <p className="text-sm font-semibold text-black/65">
+                {t("timeline.scrollHint")}
+              </p>
+            ) : null}
           </div>
 
           {isLoading ? (
@@ -77,35 +105,43 @@ function Timeline({ onBack }: TimelineProps) {
             <p className="p-5 text-lg font-semibold">{t("timeline.empty")}</p>
           ) : null}
 
-          <ol className="divide-y-2 divide-[#D96543]/35">
-            {items.map(({ item, year }) => {
-              const isSelected = item.id === selectedEntry?.item.id;
+          {items.length > 0 ? (
+            <div className="timeline-scroll overflow-x-auto">
+              <ol className="timeline-track flex w-max min-w-full px-3 py-3">
+                {items.map(({ item, year }) => {
+                  const isSelected = item.id === selectedEntry?.item.id;
 
-              return (
-                <li key={item.id}>
-                  <button
-                    type="button"
-                    onClick={() => setSelectedItemId(item.id)}
-                    aria-pressed={isSelected}
-                    className={`flex w-full items-center gap-4 px-5 py-4 text-left transition-colors focus-visible:outline-4 focus-visible:outline-offset-[-4px] focus-visible:outline-[#D96543] lg:px-6 ${
-                      isSelected
-                        ? "bg-[#D96543] text-black"
-                        : "hover:bg-[#D8BF9E]"
-                    }`}
-                  >
-                    <span className="size-3 shrink-0 rounded-full border-2 border-current bg-[#ffffff]" />
-                    <span className="text-2xl font-black tabular-nums">
-                      {year}
-                    </span>
-                  </button>
-                </li>
-              );
-            })}
-          </ol>
-        </aside>
+                  return (
+                    <li key={item.id} className="timeline-stop relative flex-1">
+                      <button
+                        type="button"
+                        onClick={() => setSelectedItemId(item.id)}
+                        aria-pressed={isSelected}
+                        className={`relative z-10 flex w-full flex-col items-center rounded-sm transition-colors focus-visible:outline-4 focus-visible:outline-offset-[-4px] focus-visible:outline-[#D96543] ${
+                          isSelected ? "text-[#a63d22]" : "text-[#426795] hover:text-[#a63d22]"
+                        }`}
+                      >
+                        <span className="flex h-12 items-center px-2 text-2xl font-black tabular-nums">
+                          {year}
+                        </span>
+                        <span className="flex h-12 items-center justify-center" aria-hidden="true">
+                          <span
+                            className={`size-5 rounded-full border-[3px] border-current ${
+                              isSelected ? "bg-[#D96543] ring-4 ring-[#D96543]/25" : "bg-white"
+                            }`}
+                          />
+                        </span>
+                      </button>
+                    </li>
+                  );
+                })}
+              </ol>
+            </div>
+          ) : null}
+        </nav>
 
         <section
-          className="min-h-90 border-2 border-[#426795] bg-[#ffffff] p-5 shadow-[8px_8px_0_rgba(66,103,149,0.18)] lg:p-7"
+          className="timeline-detail min-h-90 min-w-0 border-2 border-[#426795] bg-[#ffffff] p-5 shadow-[8px_8px_0_rgba(66,103,149,0.18)] lg:p-7"
           aria-live="polite"
         >
           {selectedEntry ? (
@@ -114,26 +150,48 @@ function Timeline({ onBack }: TimelineProps) {
                 {selectedEntry.year}
               </p>
 
-              {selectedEntry.item.meta.text ? (
+              {selectedText ? (
                 <div
-                  className="mt-5 border-t-2 border-[#D96543]/55 pt-5 text-lg leading-relaxed [&_a]:font-bold [&_a]:text-[#426795] [&_p]:mb-3"
+                  className="mt-5 break-words border-t-2 border-[#D96543]/55 pt-5 text-lg leading-relaxed [&_a]:font-bold [&_a]:text-[#426795] [&_p]:mb-3"
                   dangerouslySetInnerHTML={{
-                    __html: selectedEntry.item.meta.text,
+                    __html: selectedText,
                   }}
                 />
               ) : null}
 
               {images.length > 0 ? (
                 <section className="mt-7 border-t-2 border-[#D96543]/55 pt-5">
-                  <h3 className="text-xl font-bold">{t("timeline.images")}</h3>
-                  <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
+                  <div className="mx-auto flex max-w-[49.5rem] flex-wrap justify-center gap-3">
                     {images.map((image) => (
-                      <img
+                      <div
                         key={image.id}
-                        className="aspect-square w-full border border-black/25 object-cover"
-                        src={image.source_url}
-                        alt={image.alt_text || image.caption.rendered || ""}
-                      />
+                        className="relative aspect-square w-[calc((100%_-_0.75rem)/2)] max-w-64 overflow-hidden border border-black/25 sm:w-[calc((100%_-_1.5rem)/3)]"
+                      >
+                        <img
+                          className="timeline-image-static absolute inset-0 h-full max-h-full w-full max-w-full object-contain"
+                          src={image.source_url}
+                          alt={image.alt_text || image.caption.rendered || ""}
+                        />
+                        <button
+                          type="button"
+                          className="timeline-image-button absolute inset-0 h-full w-full cursor-zoom-in focus-visible:outline-4 focus-visible:outline-offset-[-4px] focus-visible:outline-[#D96543]"
+                          aria-label={
+                            image.alt_text
+                              ? `${t("timeline.enlargeImage")}: ${image.alt_text}`
+                              : t("timeline.enlargeImage")
+                          }
+                          onClick={() => {
+                            setEnlargedImage(image);
+                            imageDialogRef.current?.showModal();
+                          }}
+                        >
+                          <img
+                            className="h-full max-h-full w-full max-w-full object-contain"
+                            src={image.source_url}
+                            alt=""
+                          />
+                        </button>
+                      </div>
                     ))}
                   </div>
                 </section>
@@ -151,6 +209,45 @@ function Timeline({ onBack }: TimelineProps) {
             </p>
           ) : null}
         </section>
+        {createPortal(
+          <dialog
+            ref={imageDialogRef}
+            aria-label={t("timeline.enlargedImage")}
+            onClose={() => setEnlargedImage(null)}
+            onKeyDown={(event) => {
+              if (event.key === "Escape") {
+                event.preventDefault();
+                event.currentTarget.close();
+              }
+            }}
+            onClick={(event) => {
+              if (event.target === event.currentTarget) {
+                event.currentTarget.close();
+              }
+            }}
+            className="m-auto max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-5xl overflow-auto border-2 border-[#426795] bg-white p-4 text-black backdrop:bg-black/80"
+          >
+            <div className="mb-3 flex justify-end">
+              <button
+                type="button"
+                onClick={() => imageDialogRef.current?.close()}
+                className="border-2 border-[#426795] px-4 py-2 font-bold focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-[#D96543]"
+              >
+                {t("timeline.closeImage")}
+              </button>
+            </div>
+            {enlargedImage ? (
+              <div className="flex justify-center">
+                <img
+                  className="max-h-[calc(100dvh-8rem)] max-w-full object-contain"
+                  src={enlargedImage.source_url}
+                  alt={enlargedImage.alt_text || enlargedImage.caption.rendered || ""}
+                />
+              </div>
+            ) : null}
+          </dialog>,
+          document.body,
+        )}
       </div>
     </SectionLayout>
   );
