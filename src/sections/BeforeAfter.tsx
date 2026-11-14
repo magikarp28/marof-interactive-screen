@@ -8,7 +8,8 @@ type BeforeAfterProps = {
 };
 
 function BeforeAfter({ onBack }: BeforeAfterProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const language = i18n.resolvedLanguage === "en" ? "en" : "hr";
   const { data: entries, isLoading, error } = useBeforeAfters();
   const imageIds = entries.flatMap((entry) => [
     entry.meta.before_image_id,
@@ -42,11 +43,20 @@ function BeforeAfter({ onBack }: BeforeAfterProps) {
           {entries.map((entry) => {
             const beforeImage = mediaById.get(entry.meta.before_image_id);
             const afterImage = mediaById.get(entry.meta.after_image_id);
+            const titleIsHtml = language === "hr" || !entry.meta.title_en;
+            const title =
+              language === "en" && entry.meta.title_en
+                ? entry.meta.title_en
+                : entry.title.rendered;
+            const text =
+              entry.meta[`text_${language}`] || entry.meta.text_hr || "";
 
             return (
               <li key={entry.id}>
                 <BeforeAfterComparison
-                  title={entry.title.rendered}
+                  title={title}
+                  titleIsHtml={titleIsHtml}
+                  text={text}
                   beforeImage={beforeImage}
                   afterImage={afterImage}
                   isLoading={isMediaLoading}
@@ -62,6 +72,8 @@ function BeforeAfter({ onBack }: BeforeAfterProps) {
 
 type BeforeAfterComparisonProps = {
   title: string;
+  titleIsHtml: boolean;
+  text: string;
   beforeImage: { source_url: string; alt_text: string } | undefined;
   afterImage: { source_url: string; alt_text: string } | undefined;
   isLoading: boolean;
@@ -69,6 +81,8 @@ type BeforeAfterComparisonProps = {
 
 function BeforeAfterComparison({
   title,
+  titleIsHtml,
+  text,
   beforeImage,
   afterImage,
   isLoading,
@@ -93,10 +107,19 @@ function BeforeAfterComparison({
 
   return (
     <article>
-      <h2
-        className="text-2xl font-bold leading-tight lg:text-3xl"
-        dangerouslySetInnerHTML={{ __html: title }}
-      />
+      <h2 className="text-2xl font-bold leading-tight lg:text-3xl">
+        {titleIsHtml ? (
+          <span dangerouslySetInnerHTML={{ __html: title }} />
+        ) : (
+          title
+        )}
+      </h2>
+      {text ? (
+        <div
+          className="mt-3 break-words leading-relaxed whitespace-pre-line [&_a]:font-bold [&_a]:text-[#426795] [&_p]:mb-3"
+          dangerouslySetInnerHTML={{ __html: text }}
+        />
+      ) : null}
       <div className="mt-4 overflow-hidden border-2 border-[#426795] bg-[#426795] shadow-[6px_6px_0_rgba(66,103,149,0.18)]">
         <div className="relative aspect-[4/3] select-none">
           <img

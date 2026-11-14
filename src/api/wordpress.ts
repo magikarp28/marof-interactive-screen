@@ -74,6 +74,9 @@ export type AudioStory = Omit<WordPressPost<Record<string, never>>, "title"> & {
 };
 
 export type BeforeAfterMeta = {
+  title_en: string;
+  text_hr: string;
+  text_en: string;
   before_image_id: number;
   after_image_id: number;
 };
