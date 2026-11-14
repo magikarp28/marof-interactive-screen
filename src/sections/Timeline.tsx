@@ -13,14 +13,17 @@ type TimelineProps = {
   onBack: () => void;
 };
 
-function timelineYear(item: TimelineItem) {
-  const rawYear = item.meta.year.trim();
-  if (!rawYear) {
-    return null;
+function timelineSortYear(item: TimelineItem) {
+  const match = item.meta.year.trim().match(/^[+-]?\d+(?:\.\d+)?/);
+  return match ? Number(match[0]) : Infinity;
+}
+
+function TimelineTitle({ item, language }: { item: TimelineItem; language: "hr" | "en" }) {
+  if (language === "en" && item.meta.title_en) {
+    return item.meta.title_en;
   }
 
-  const year = Number(rawYear);
-  return Number.isFinite(year) ? year : null;
+  return <span dangerouslySetInnerHTML={{ __html: item.title.rendered }} />;
 }
 
 function orderedMedia(ids: number[], media: WordPressMedia[]) {
@@ -43,11 +46,8 @@ function Timeline({ onBack }: TimelineProps) {
   const language = i18n.resolvedLanguage === "en" ? "en" : "hr";
   const { data: timelineItems, isLoading, error } = useTimeline();
   const items = timelineItems
-    .flatMap((item) => {
-      const year = timelineYear(item);
-      return year === null ? [] : [{ item, year }];
-    })
-    .sort((first, second) => first.year - second.year);
+    .map((item) => ({ item, sortYear: timelineSortYear(item) }))
+    .sort((first, second) => first.sortYear - second.sortYear);
   const [selectedItemId, setSelectedItemId] = useState<number | null>(null);
   const [enlargedImage, setEnlargedImage] = useState<WordPressMedia | null>(null);
   const imageDialogRef = useRef<HTMLDialogElement>(null);
@@ -108,11 +108,11 @@ function Timeline({ onBack }: TimelineProps) {
           {items.length > 0 ? (
             <div className="timeline-scroll overflow-x-auto">
               <ol className="timeline-track flex w-max min-w-full px-3 py-3">
-                {items.map(({ item, year }) => {
+                {items.map(({ item }) => {
                   const isSelected = item.id === selectedEntry?.item.id;
 
                   return (
-                    <li key={item.id} className="timeline-stop relative flex-1">
+                    <li key={item.id} className="timeline-stop relative">
                       <button
                         type="button"
                         onClick={() => setSelectedItemId(item.id)}
@@ -121,8 +121,8 @@ function Timeline({ onBack }: TimelineProps) {
                           isSelected ? "text-[#a63d22]" : "text-[#426795] hover:text-[#a63d22]"
                         }`}
                       >
-                        <span className="flex h-12 items-center px-2 text-2xl font-black tabular-nums">
-                          {year}
+                        <span className="flex h-12 w-full items-center justify-center px-2 text-center text-lg font-black leading-tight tabular-nums [overflow-wrap:anywhere] sm:text-xl">
+                          {item.meta.year}
                         </span>
                         <span className="flex h-12 items-center justify-center" aria-hidden="true">
                           <span
@@ -130,6 +130,9 @@ function Timeline({ onBack }: TimelineProps) {
                               isSelected ? "bg-[#D96543] ring-4 ring-[#D96543]/25" : "bg-white"
                             }`}
                           />
+                        </span>
+                        <span className="w-full px-3 text-center text-sm font-semibold leading-tight [overflow-wrap:anywhere]">
+                          <TimelineTitle item={item} language={language} />
                         </span>
                       </button>
                     </li>
@@ -146,9 +149,13 @@ function Timeline({ onBack }: TimelineProps) {
         >
           {selectedEntry ? (
             <article>
-              <p className="text-5xl font-black tabular-nums text-[#D96543] lg:text-6xl">
-                {selectedEntry.year}
+              <p className="break-words text-3xl font-black tabular-nums text-[#D96543] sm:text-5xl lg:text-6xl">
+                {selectedEntry.item.meta.year}
               </p>
+
+              <h2 className="mt-3 break-words text-xl font-bold leading-tight sm:text-2xl lg:text-3xl">
+                <TimelineTitle item={selectedEntry.item} language={language} />
+              </h2>
 
               {selectedText ? (
                 <div

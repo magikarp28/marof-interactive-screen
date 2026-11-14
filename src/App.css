@@ -38,7 +38,9 @@ button {
 }
 
 .timeline-stop {
-  min-width: 7rem;
+  flex: 1 0 9rem;
+  width: 9rem;
+  min-width: 0;
 }
 
 .timeline-stop:not(:last-child)::before {

@@ -22,6 +22,15 @@ out fully to see the entire map at once.
 
 Audio stories are managed separately and are not linked to map locations.
 
+## Timeline
+
+Each timeline entry uses the WordPress title as its Croatian title, with an
+English title and descriptions for both languages in the timeline editor. The
+year or period is shared between languages and is displayed as entered. Entries
+are ordered by their leading numeric year; periods without a leading year appear
+after those entries. If the English title or description is empty, the Croatian
+content is shown instead.
+
 ## Recommended IDE Setup
 
 - [VS Code](https://code.visualstudio.com/) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
